@@ -33,14 +33,22 @@ public class PersistanceContextTest {
 //
 //            System.out.println(post1 == post2); // true
 
-            Post post1 = new Post(4L, "제목4", "내용4");
-            Post post2 = new Post(5L, "제목5", "내용5");
-            em.persist(post1);
-            em.persist(post2);
+//            Post post1 = new Post(4L, "제목4", "내용4");
+//            Post post2 = new Post(5L, "제목5", "내용5");
+//            em.persist(post1);
+//            em.persist(post2);
+//
+//            System.out.println("======================"); // 쓰기 지연 sql 효과로 선 밑에서 insert query 일괄 실행됨
 
-            System.out.println("======================"); // 쓰기 지연 sql 효과로 선 밑에서 insert query 일괄 실행됨
+            System.out.println("=============");
+            Post post1 = em.find(Post.class, 4L); // select query 실행 후
+            System.out.println("=============");
+            post1.setBody("변경내용44"); // 변경을 감지하고
 
-            tx.commit();
+            // 더티 체킹 -> 1차 캐시에 객체 읽어서 저장될 때 스냅샷 떠놓고 이후 변경사항이 있는지 체크
+            // 변경 감지 되면 쓰기 지연 저장소에 update query 저장
+            tx.commit(); // update query 실행
+            // em.flush(); // 쓰기 지연 저장소에 있는 query 실행
 
         } catch (Exception e) {
             e.printStackTrace();
