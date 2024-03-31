@@ -32,6 +32,9 @@ public class JpaMain {
 //            Post post = em.find(Post.class, 3L);
 //            post.setBody("내용변경");
 
+            Post removeTarget = em.find(Post.class, 3L);
+            em.remove(removeTarget);
+
             List<Post> postList = em.createQuery("select p from Post as p", Post.class)
                     .setFirstResult(1)
                     .setMaxResults(10)
